@@ -5,31 +5,38 @@
 
 $('#clearButton').click(function () {
     $('#display').val('');
-    // clean out sessionStorage
+    sessionStorage.clear();
+
+    $('#output').text( JSON.parse(sessionStorage) );
 });
 
 $('.digit').click(function () {
     var display = $('#display');
-    var value = sessionStorage.isNewValue ? '' : display.val();
-    sessionStorage.isNewValue = '';
+    var value = sessionStorage.getItem('isNewValue') ? '' : display.val();
+    sessionStorage.setItem('isNewValue', false);
     display.val( value + $(this).val() );
+
+    $('#output').text( JSON.parse(sessionStorage) );
 });
 
 $('.operator').click(function () {
-    var calculation = [];
-    if (sessionStorage.calculation) {
-        calculation = JSON.parse(sessionStorage.calculation);
-    }
-    calculation.push($('#display'));
-    sessionStorage.calculation = JSON.stringify(calculation);
-    sessionStorage.isNewValue = 'yes';
+    var calculation = sessionStorage.getItem(calculation);
+    var calc_stack = calculation ? JSON.parse(calculation) : [];
+    calc_stack.push($('#display').val());
+    sessionStorage.setItem('calculation', JSON.stringify(calc_stack));
+    sessionStorage.setItem('isNewValue', true);
+
+    $('#output').text( JSON.parse(sessionStorage) );
 });
 
 $('#equalsButton').click(function () {
-    var calculation = JSON.parse(sessionStorage.calculation);
-    var val1 = calculation.unshift();
-    var op = calculation.unshift();
-    var val2 = calculation.unshift();
+    var calc_stack = JSON.parse(sessionStorage.getItem('calculation'));
+    $('#output').text(calc_stack);
+    var val1 = calc_stack.unshift();
+    var op = calc_stack.unshift();
+    var val2 = calc_stack.unshift();
     $('#display').val( parseInt(val1) + parseInt(val2) );
+
+    $('#output').text( JSON.parse(sessionStorage) );
 });
 
