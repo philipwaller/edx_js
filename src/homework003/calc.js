@@ -2,41 +2,44 @@
  * Implement all your JavaScript in this file!
  */
 
-
 $('#clearButton').click(function () {
     $('#display').val('');
     sessionStorage.clear();
-
-    $('#output').text( JSON.parse(sessionStorage) );
 });
 
 $('.digit').click(function () {
     var display = $('#display');
-    var value = sessionStorage.getItem('isNewValue') ? '' : display.val();
-    sessionStorage.setItem('isNewValue', false);
+    var value = sessionStorage.getItem('is_new') ? '' : display.val();
+    sessionStorage.setItem('is_new', '');
     display.val( value + $(this).val() );
-
-    $('#output').text( JSON.parse(sessionStorage) );
 });
 
 $('.operator').click(function () {
-    var calculation = sessionStorage.getItem(calculation);
-    var calc_stack = calculation ? JSON.parse(calculation) : [];
-    calc_stack.push($('#display').val());
-    sessionStorage.setItem('calculation', JSON.stringify(calc_stack));
-    sessionStorage.setItem('isNewValue', true);
+    var stack = sessionStorage.getItem('stack');
+    stack = (stack) ? JSON.parse(stack) : [];
+    stack.unshift( parseInt($('#display').val()) );
+    stack.unshift( $(this).text() );
+    sessionStorage.setItem('stack', JSON.stringify(stack));
+    sessionStorage.setItem('is_new', true);
 
-    $('#output').text( JSON.parse(sessionStorage) );
+    $('#output').text( 'stack: ' + stack );
 });
 
 $('#equalsButton').click(function () {
-    var calc_stack = JSON.parse(sessionStorage.getItem('calculation'));
-    $('#output').text(calc_stack);
-    var val1 = calc_stack.unshift();
-    var op = calc_stack.unshift();
-    var val2 = calc_stack.unshift();
-    $('#display').val( parseInt(val1) + parseInt(val2) );
+    var stack = sessionStorage.getItem('stack');
+    stack = (stack) ? JSON.parse(stack) : [];
+    stack.unshift( parseInt($('#display').val()) );
 
-    $('#output').text( JSON.parse(sessionStorage) );
+    var val1 = stack.shift();
+    var op = stack.shift();
+    var val2 = stack.shift();
+
+    var result = val2 + val1;
+    stack.unshift( result );
+    sessionStorage.setItem('stack', JSON.stringify(stack));
+    sessionStorage.setItem('is_new', true);
+
+    $('#display').val( val1 + val2 );
+    $('#output').text( 'stack: ' + stack );
 });
 
