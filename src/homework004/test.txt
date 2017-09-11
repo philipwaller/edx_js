@@ -1,0 +1,12 @@
+1. font size should initially be black when value between min and max
+
+2. text font size should revert to default when double-clicked
+
+3. decrease button should decrement font size of text when clicked
+4. increase button should increment font size of text when clicked
+
+5. checkbox should initially be checked when bold is true
+6. checkbox should initially be unchecked when bold is false
+                    defaultChecked={check}
+
+7. text should have correct initial font size
