@@ -4,6 +4,7 @@ class AddList extends Component {
 
 
   handleSubmit(e) {
+      e.preventDefault();
       var name = this.refs.id.value;
       if ( !name ) { return; }
       this.refs.id.value = '';
@@ -12,7 +13,6 @@ class AddList extends Component {
           }, function () {
               this.props.addList(this.state.name);
           });
-      e.preventDefault();
   }
 
   render() {
