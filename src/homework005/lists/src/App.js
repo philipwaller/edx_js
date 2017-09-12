@@ -40,7 +40,14 @@ class App extends Component {
      * the state, this function  should then re-render this App component.
      */
     handleAddItem(item) {
-        console.log( "App : " + item );
+        let items = this.state.items;
+
+        let entry = Object.entries(item)[0];
+        let list = entry[0];
+        let name = entry[1];
+
+        items[list].push(name);
+        this.setState({items: items})
     }
 
     /**
