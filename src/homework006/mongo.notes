@@ -1,0 +1,7 @@
+sudo service mongod start
+/var/log/mongod/mongod.log
+/ect/mongod.conf
+	port: 27017
+
+sudo service mongod stop
+sudo service mongod restart
