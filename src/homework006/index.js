@@ -55,7 +55,7 @@ app.use('/animalsYoungerThan', (req,res) => {
                     } else if (! animals.length) {
                         res.json({ count:animals.length });
                     } else {
-                        var names = Object.values(animals).map( (animal) => {
+                        var names = animals.map( (animal) => {
                                 return animal.name;
                             });
                         res.json({ count:animals.length, names:names })
@@ -65,7 +65,35 @@ app.use('/animalsYoungerThan', (req,res) => {
     });
 
 app.use('/calculatePrice', (req, res) => {
-        var query = {};
+        if (! req.query.id) { 
+            res.json({}); 
+        } else {
+            var zip = {};
+            req.query.id.forEach( (id, i) => {
+                    zip[id] = req.query.qty[i];
+                });
+            var query = {};
+            query.id = {$in: req.query.id};
+            Toy.find( query, (err, toys) => {
+                if (err) {
+                    res.type('html').status(500).send('ERROR: ' + err);
+                } else {
+                    var total = 0;
+                    var items = toys.map( (toy) => {
+                            var item = {};
+                            item.item = toy.id;
+                            item.qty = zip[toy.id];
+                            item.subtotal = Number(toy.price) * Number(item.qty);
+                            total += item.subtotal;
+                            return item;
+                        });
+
+                    res.json({ items:items, totalPrice:total });
+                }
+            }).select({ id:1, price:1, _id:0 });
+        }
+
+        //res.json({ totalPrice:0, items:[ {item:'item0', qty:0, subtotal:0} ] });
     });
 
 app.use('/', (req, res) => {

@@ -1,0 +1,4 @@
+db.toys.insertMany([
+{ id:'123', name:'Dog chew toy', price:10.99 },
+{ id:'456', name:'Dog pillow', price:25.99 }
+]);
