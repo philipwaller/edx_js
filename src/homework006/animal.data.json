@@ -1,0 +1,6 @@
+db.animals.insertMany([
+{ name:'Cooper', species:'Dog', breed:'Catahoula', gender:'male', age:11, traits:['crazy', 'funny'] },
+{ name:'Lola', species:'Dog', breed:'Beagle', gender:'female', age:5, traits:['loyal', 'friendly'] },
+{ name:'Garfield', species:'Cat', breed:'Tabby', gender:'male', age:39, traits:['lazy', 'hungry'] },
+{ name:'Felix', species:'Cat', breed:'Tuxedo', gender:'male', age:98, traits:['funny', 'loyal'] }
+]);
