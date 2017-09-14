@@ -14,7 +14,7 @@ app.use('/findtoy', (req, res) => {
                 } else if (!toys.length) {
                     res.json({});
                 } else {
-                    res.json(toys);
+                    res.json(toys[0]);
                 }
             });
         } else {
@@ -65,30 +65,36 @@ app.use('/animalsYoungerThan', (req,res) => {
     });
 
 app.use('/calculatePrice', (req, res) => {
-        if (! req.query.id) { 
+        var ids = req.query.id;
+        var qtys = req.query.qty;
+
+        if (! ids || !qtys || ids.length !== qtys.length) { 
             res.json({}); 
+
         } else {
             var zip = {};
-            req.query.id.forEach( (id, i) => {
-                    zip[id] = req.query.qty[i];
-                });
+            ids.forEach( (id, i) => { 
+                if ( !zip[id] ) zip[id] = Number(qtys[i]);
+                else zip[id] += Number(qtys[i]); 
+            });
             var query = {};
-            query.id = {$in: req.query.id};
+            query.id = {$in: ids};
             Toy.find( query, (err, toys) => {
                 if (err) {
                     res.type('html').status(500).send('ERROR: ' + err);
                 } else {
                     var total = 0;
-                    var items = toys.map( (toy) => {
+                    res.json( toys.reduce( (result, toy) => {
                             var item = {};
                             item.item = toy.id;
-                            item.qty = zip[toy.id];
-                            item.subtotal = Number(toy.price) * Number(item.qty);
-                            total += item.subtotal;
-                            return item;
-                        });
-
-                    res.json({ items:items, totalPrice:total });
+                            item.qty = Number(zip[toy.id]);
+                            if (! isNaN(item.qty) && item.qty > 0) {
+                                item.subtotal = Number(toy.price) * item.qty;
+                                result.totalPrice += item.subtotal;
+                                result.items.push(item);
+                            }
+                            return result;
+                        }, { items:[], totalPrice:0} ) );
                 }
             }).select({ id:1, price:1, _id:0 });
         }
